@@ -71,7 +71,7 @@ for epoch in range(epochs):
         batch_Y_oh = train_Y_oh[start:end]
 
         # Propagare înainte
-        z = np.dot(batch_X, W) + b
+        z = np.dot(batch_X, W) + b#calcularea produsului scalar dintre datele de intrare și greutăți, urmată de adăugarea bias-ului
         predictions = softmax(z)
 
         # Calcularea erorii

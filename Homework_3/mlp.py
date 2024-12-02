@@ -2,15 +2,15 @@ import numpy as np
 
 class MLP:
     def __init__(self, input_size, hidden_size, output_size, dropout_rate=0.5):
-        # input_size - dimensiunea intrării (numărul de trăsături)
+        # input_size - dimensiunea intrării
         # hidden_size - dimensiunea stratului ascuns
-        # output_size - dimensiunea stratului de ieșire (numărul de clase pentru clasificare)
+        # output_size - dimensiunea stratului de ieșire
         # dropout_rate - rata de dropout pentru regularizare
         self.W1 = np.random.randn(input_size, hidden_size) * 0.01
         self.b1 = np.zeros((1, hidden_size))
         self.W2 = np.random.randn(hidden_size, output_size) * 0.01
         self.b2 = np.zeros((1, output_size))
-        self.dropout_rate = dropout_rate                            # Rata de dropout
+        self.dropout_rate = dropout_rate
         # W1 conectează datele de intrare la stratul ascuns
         # W2 conectează stratul ascuns la stratul de ieșire, unde sunt generate predicțiile finale ale rețelei.
         # b1 este un vector de biasuri pentru fiecare neuron din stratul ascuns
@@ -20,8 +20,8 @@ class MLP:
         return 1 / (1 + np.exp(-z))
 
     def softmax(self, z):
-        exp_z = np.exp(z - np.max(z, axis=1, keepdims=True))  # Stabilizează valorile
-        return exp_z / np.sum(exp_z, axis=1, keepdims=True)   # Normalizare pentru probabilități
+        exp_z = np.exp(z - np.max(z, axis=1, keepdims=True))
+        return exp_z / np.sum(exp_z, axis=1, keepdims=True)
 
     def forward(self, X, training=True):
         # Se calculează activările nete (Z1) aplicând greutățile și biasurile.
@@ -44,10 +44,10 @@ class MLP:
         #dZ2 măsoară diferența dintre predicțiile rețelei (A2) și valorile reale (Y).
         # Este gradientul funcției de cost față de activările stratului final.
         dZ2 = self.A2 - Y
-        # dW2 e Gradientul funcției de cost în raport cu greutățile stratului de ieșire,
-        # calculat ca produs între activările stratului ascuns și eroarea din stratul de ieșire.
+
+        #dW2: Spune cum trebuie ajustate greutățile care leagă stratul ascuns de stratul de ieșire
         dW2 = np.dot(self.A1.T, dZ2) / m
-        # Gradientul funcției de cost în raport cu biasurile stratului de ieșire.
+        # db2: Spune cum trebuie ajustate biasurile stratului final.
         db2 = np.sum(dZ2, axis=0, keepdims=True) / m
         # dA1 este eroarea propagată înapoi de la stratul de ieșire spre stratul ascuns,
         # obținută prin înmulțirea gradientului de la stratul final cu greutățile stratului de ieșire.
@@ -68,7 +68,7 @@ class MLP:
 
     def train(self, X_train, Y_train, X_val, Y_val, epochs, batch_size, learning_rate):
         for epoch in range(epochs):
-            permutation = np.random.permutation(X_train.shape[0])  # Amestecă datele de antrenament
+            permutation = np.random.permutation(X_train.shape[0])
             X_train_shuffled = X_train[permutation]
             Y_train_shuffled = Y_train[permutation]
 
@@ -79,7 +79,6 @@ class MLP:
                 self.forward(X_batch)
                 self.backward(X_batch, Y_batch, learning_rate)
 
-            # Evaluează modelul pe setul de antrenament și validare
             train_accuracy = self.evaluate(X_train, Y_train)
             val_accuracy = self.evaluate(X_val, Y_val)
             print('Epoch {}, Train Accuracy: {:.4f}, Validation Accuracy: {:.4f}'.format(epoch+1, train_accuracy, val_accuracy))
